@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
+import static ru.enke.annotated.nbt.tag.Tag.Type.END;
+
 public class NBTOutputStream extends DataOutputStream {
 
     public NBTOutputStream(OutputStream out) throws IOException {
@@ -19,80 +21,122 @@ public class NBTOutputStream extends DataOutputStream {
         super(compressed ? new GZIPOutputStream(out) : out);
     }
 
-    @SuppressWarnings("unchecked")
     public void writeTag(final Tag tag) throws IOException {
-        final Tag.Type type = tag.getType();
-        final Object value = tag.getValue();
+        final Tag.Type tagType = tag.getType();
 
-        writeByte(type.ordinal());
+        writeTagType(tagType);
         writeUTF(tag.getName());
+        writeTag(tagType, tag.getValue());
+    }
 
+    private void writeTagType(final Tag.Type type) throws IOException {
+        writeByte(type.ordinal());
+    }
+
+    @SuppressWarnings("unchecked")
+    private void writeTag(final Tag.Type type, final Object value) throws IOException {
         switch(type) {
             case END:
                 break;
             case BYTE:
-                writeByte((byte) value);
+                writeByteTag((byte) value);
                 break;
             case SHORT:
-                writeShort((short) value);
+                writeShortTag((short) value);
                 break;
             case INTEGER:
-                writeInt((int) value);
+                writeIntTag((int) value);
                 break;
             case LONG:
-                writeLong((long) value);
+                writeLongTag((long) value);
                 break;
             case FLOAT:
-                writeFloat((float) value);
+                writeFloatTag((float) value);
                 break;
             case DOUBLE:
-                writeDouble((double) value);
+                writeDoubleTag((double) value);
                 break;
             case BYTE_ARRAY:
-                byte[] bytes = (byte[]) value;
-
-                writeInt(bytes.length);
-                write(bytes);
+                writeByteArrayTag((byte[]) value);
                 break;
             case STRING:
-                writeUTF((String) value);
+                writeStringTag((String) value);
                 break;
             case LIST:
-                final List<Tag> list = (List<Tag>) value;
-
-                if(!list.isEmpty()) {
-                    writeByte(list.get(0).getType().ordinal());
-                } else {
-                    writeByte(0);
-                }
-
-                writeInt(list.size());
-
-                for(final Tag t : list) {
-                    writeTag(t);
-                }
-
+                writeListTag((List<Tag<?>>) value);
                 break;
             case COMPOUND:
-                final Map<String, Tag> map = (Map<String, Tag>) value;
-
-                for(final Tag t : map.values()) {
-                    writeTag(t);
-                }
-
-                writeByte(0);
+                writeCompoundTag((Map<String, Tag<?>>) value);
                 break;
             case INTEGER_ARRAY:
-                final int[] ints = (int[]) value;
-                writeInt(ints.length);
-
-                for(final int i : ints) {
-                    writeInt(i);
-                }
-
+                writeIntArrayTag((int[]) value);
                 break;
             default:
                 throw new UnsupportedOperationException();
+        }
+    }
+
+    private void writeByteTag(final byte value) throws IOException {
+        writeByte(value);
+    }
+
+    private void writeShortTag(final short value) throws IOException {
+        writeShort(value);
+    }
+
+    private void writeIntTag(final int value) throws IOException {
+        writeInt(value);
+    }
+
+    private void writeLongTag(final long value) throws IOException {
+        writeLong(value);
+    }
+
+    private void writeFloatTag(final float value) throws IOException {
+        writeFloat(value);
+    }
+
+    private void writeDoubleTag(final double value) throws IOException {
+        writeDouble(value);
+    }
+
+    private void writeByteArrayTag(final byte[] bytes) throws IOException {
+        writeInt(bytes.length);
+        write(bytes);
+    }
+
+    private void writeStringTag(final String value) throws IOException {
+        writeUTF(value);
+    }
+
+    private void writeListTag(final List<Tag<?>> tags) throws IOException {
+        final Tag.Type elementType = !tags.isEmpty() ? tags.get(0).getType() : END;
+
+        writeTagType(elementType);
+        writeInt(tags.size());
+
+        for(final Tag childTag : tags) {
+            if(!childTag.getName().equals("")) {
+                throw new IllegalArgumentException("List tag element contains tag name");
+            }
+
+            writeTag(elementType, childTag.getValue());
+        }
+    }
+
+    private void writeCompoundTag(final Map<String, Tag<?>> tags) throws IOException {
+        for(final Tag childTag : tags.values()) {
+            writeTag(childTag);
+        }
+
+        writeTagType(END);
+    }
+
+    private void writeIntArrayTag(final int[] ints) throws IOException {
+        writeInt(ints.length);
+
+        for(final int i : ints) {
+            writeInt(i);
         }
     }
 

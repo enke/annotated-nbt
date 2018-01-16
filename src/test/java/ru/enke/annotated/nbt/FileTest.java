@@ -20,12 +20,12 @@ public class FileTest {
 
     @DataPoints("compressed")
     public static String[] compressed() {
-        return new String[] {"bigtest.nbt", "player.dat", "level.dat"};
+        return new String[] {"bigtest.dat", "player.dat", "level.dat"};
     }
 
     @Theory
     public void testUncompressed(@FromDataPoints("uncompressed") String file) throws IOException {
-        new NBTInputStream(new FileInputStream("src/test/resources/" + file), false).readTag();
+        new NBTInputStream(new FileInputStream("src/test/resources/" + file)).readTag();
     }
 
     @Theory

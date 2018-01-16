@@ -17,23 +17,20 @@ import static ru.enke.annotated.nbt.tag.Tag.Type.END;
 
 public class NBTInputStream extends DataInputStream {
 
+    private final boolean compressed;
+
     public NBTInputStream(final InputStream in) throws IOException {
         this(in, false);
     }
 
     public NBTInputStream(final InputStream in, final boolean compressed) throws IOException {
         super(compressed ? new GZIPInputStream(in) : in);
+        this.compressed = compressed;
     }
 
     @Nullable
-    public Tag readTag() throws IOException {
-        final Tag.Type type = readTagType();
-
-        if(type == END) {
-            return null;
-        }
-
-        return readTag(type, readUTF());
+    public Tag<?> readTag() throws IOException {
+        return readTag(readTagType(), true);
     }
 
     private Tag.Type readTagType() throws IOException {
@@ -41,6 +38,10 @@ public class NBTInputStream extends DataInputStream {
         final Tag.Type[] types = Tag.Type.values();
 
         if(typeId < 0 | typeId > types.length) {
+            if(typeId == 31 && !compressed) {
+                throw new IllegalArgumentException("Reading compressed stream in uncompressed mode");
+            }
+
             throw new IllegalArgumentException("Unknown tag type " + typeId);
         }
 
@@ -48,67 +49,139 @@ public class NBTInputStream extends DataInputStream {
     }
 
     @Nullable
-    private Tag readTag(final Tag.Type type, final String name) throws IOException {
+    private Tag<?> readTag(final Tag.Type type, final boolean hasName) throws IOException {
         switch(type) {
+            case END:
+                return null;
             case BYTE:
-                return TagFactory.createByteTag(name, readByte());
+                return readByteTag(hasName);
             case SHORT:
-                return TagFactory.createShortTag(name, readShort());
+                return readShortTag(hasName);
             case INTEGER:
-                return TagFactory.createIntTag(name, readInt());
+                return readIntTag(hasName);
             case LONG:
-                return TagFactory.createLongTag(name, readLong());
+                return readLongTag(hasName);
             case FLOAT:
-                return TagFactory.createFloatTag(name, readFloat());
+                return readFloatTag(hasName);
             case DOUBLE:
-                return TagFactory.createDoubleTag(name, readDouble());
+                return readDoubleTag(hasName);
             case BYTE_ARRAY:
-                final int bytesLength = readInt();
-                final byte[] bytes = new byte[bytesLength];
-
-                for(int i = 0; i < bytesLength; i++) {
-                    bytes[i] = readByte();
-                }
-
-                return TagFactory.createByteArrayTag(name, bytes);
+                return readByteArrayTag(hasName);
             case STRING:
-                return TagFactory.createStringTag(name, readUTF());
+                return readStringTag(hasName);
             case LIST:
-                final Tag.Type listType = readTagType();
-
-                if(listType == END) {
-                    return null;
-                }
-
-                final List<Tag<?>> list = new ArrayList<>();
-                final int listSize = readInt();
-
-                for(int i = 0; i < listSize; i++) {
-                    list.add(readTag(listType, ""));
-                }
-
-                return TagFactory.createListTag(name, list);
+                return readListTag(hasName);
             case COMPOUND:
-                final Map<String, Tag<?>> map = new HashMap<>();
-                Tag tag;
-
-                while((tag = readTag()) != null) {
-                    map.put(tag.getName(), tag);
-                }
-
-                return TagFactory.createCompoundTag(name, map);
+                return readCompoundTag(hasName);
             case INTEGER_ARRAY:
-                final int intsLength = readInt();
-                final int[] ints = new int[intsLength];
-
-                for(int i = 0; i < intsLength; i++) {
-                    ints[i] = readInt();
-                }
-
-                return TagFactory.createIntArrayTag(name, ints);
+                return readIntArrayTag(hasName);
             default:
                 throw new UnsupportedOperationException();
         }
+    }
+
+    private Tag<Byte> readByteTag(final boolean hasName) throws IOException {
+        final String name = hasName ? readUTF() : "";
+        final byte value = readByte();
+
+        return TagFactory.createByteTag(name, value);
+    }
+
+    private Tag<Short> readShortTag(final boolean hasName) throws IOException {
+        final String name = hasName ? readUTF() : "";
+        final short value = readShort();
+
+        return TagFactory.createShortTag(name, value);
+    }
+
+    private Tag<Integer> readIntTag(final boolean hasName) throws IOException {
+        final String name = hasName ? readUTF() : "";
+        final int value = readInt();
+
+        return TagFactory.createIntTag(name, value);
+    }
+
+    private Tag<Long> readLongTag(final boolean hasName) throws IOException {
+        final String name = hasName ? readUTF() : "";
+        final long value = readLong();
+
+        return TagFactory.createLongTag(name, value);
+    }
+
+    private Tag<Float> readFloatTag(final boolean hasName) throws IOException {
+        final String name = hasName ? readUTF() : "";
+        final float value = readFloat();
+
+        return TagFactory.createFloatTag(name, value);
+    }
+
+    private Tag<Double> readDoubleTag(final boolean hasName) throws IOException {
+        final String name = hasName ? readUTF() : "";
+        final double value = readDouble();
+
+        return TagFactory.createDoubleTag(name, value);
+    }
+
+    private Tag<byte[]> readByteArrayTag(final boolean hasName) throws IOException {
+        final String name = hasName ? readUTF() : "";
+        final int length = readInt();
+        final byte[] bytes = new byte[length];
+
+        for(int i = 0; i < length; i++) {
+            bytes[i] = readByte();
+        }
+
+        return TagFactory.createByteArrayTag(name, bytes);
+    }
+
+    private Tag<String> readStringTag(final boolean hasName) throws IOException {
+        final String name = hasName ? readUTF() : "";
+        final String value = readUTF();
+
+        return TagFactory.createStringTag(name, value);
+    }
+
+    private Tag<List<Tag<?>>> readListTag(final boolean hasName) throws IOException {
+        final String name = hasName ? readUTF() : "";
+        final Tag.Type type = readTagType();
+
+        if(type == END) {
+            return null;
+        }
+
+        final List<Tag<?>> tags = new ArrayList<>();
+        final int listSize = readInt();
+
+        for(int i = 0; i < listSize; i++) {
+            tags.add(readTag(type, false));
+        }
+
+        return TagFactory.createListTag(name, tags);
+    }
+
+    private Tag<Map<String, Tag<?>>> readCompoundTag(final boolean hasName) throws IOException {
+        final Map<String, Tag<?>> map = new HashMap<>();
+        final String name = hasName ? readUTF() : "";
+        Tag childTag;
+
+        while((childTag = readTag()) != null) {
+            final String childName = childTag.getName();
+            map.put(childName, childTag);
+        }
+
+        return TagFactory.createCompoundTag(name, map);
+    }
+
+    private Tag<int[]> readIntArrayTag(final boolean hasName) throws IOException {
+        final String name = hasName ? readUTF() : "";
+        final int length = readInt();
+        final int[] ints = new int[length];
+
+        for(int i = 0; i < length; i++) {
+            ints[i] = readInt();
+        }
+
+        return TagFactory.createIntArrayTag(name, ints);
     }
 
 }
