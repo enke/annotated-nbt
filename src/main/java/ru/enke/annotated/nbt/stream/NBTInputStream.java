@@ -2,17 +2,16 @@ package ru.enke.annotated.nbt.stream;
 
 import org.jetbrains.annotations.Nullable;
 import ru.enke.annotated.nbt.tag.Tag;
+import ru.enke.annotated.nbt.tag.TagCompound;
 import ru.enke.annotated.nbt.tag.TagFactory;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.zip.GZIPInputStream;
 
+import static ru.enke.annotated.nbt.tag.Tag.Type.COMPOUND;
 import static ru.enke.annotated.nbt.tag.Tag.Type.END;
 
 public class NBTInputStream extends DataInputStream {
@@ -26,6 +25,22 @@ public class NBTInputStream extends DataInputStream {
     public NBTInputStream(final InputStream in, final boolean compressed) throws IOException {
         super(compressed ? new GZIPInputStream(in) : in);
         this.compressed = compressed;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Nullable
+        public TagCompound readTagCompound() throws IOException {
+        final Tag<?> tag = readTag();
+
+        if(tag == null) {
+            return null;
+        }
+
+        if(tag.getType() != COMPOUND) {
+            throw new IllegalStateException("Expected to read compound tag but got a " + tag.getType());
+        }
+
+        return new TagCompound((Tag<Map<String, Tag<?>>>) tag);
     }
 
     @Nullable
