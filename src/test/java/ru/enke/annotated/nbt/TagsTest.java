@@ -9,8 +9,6 @@ import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 import ru.enke.annotated.nbt.stream.NBTInputStream;
 import ru.enke.annotated.nbt.stream.NBTOutputStream;
-import ru.enke.annotated.nbt.tag.Tag;
-import ru.enke.annotated.nbt.tag.TagFactory;
 
 import java.io.File;
 import java.io.FileInputStream;

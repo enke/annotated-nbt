@@ -1,18 +1,22 @@
 package ru.enke.annotated.nbt.stream;
 
 import org.jetbrains.annotations.Nullable;
-import ru.enke.annotated.nbt.tag.Tag;
-import ru.enke.annotated.nbt.tag.TagCompound;
-import ru.enke.annotated.nbt.tag.TagFactory;
+import ru.enke.annotated.nbt.Tag;
+import ru.enke.annotated.nbt.TagCompound;
+import ru.enke.annotated.nbt.TagFactory;
+import ru.enke.annotated.nbt.TagType;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-import static ru.enke.annotated.nbt.tag.Tag.Type.COMPOUND;
-import static ru.enke.annotated.nbt.tag.Tag.Type.END;
+import static ru.enke.annotated.nbt.TagType.COMPOUND;
+import static ru.enke.annotated.nbt.TagType.END;
 
 public class NBTInputStream extends DataInputStream {
 
@@ -48,9 +52,9 @@ public class NBTInputStream extends DataInputStream {
         return readTag(readTagType(), true);
     }
 
-    private Tag.Type readTagType() throws IOException {
+    private TagType readTagType() throws IOException {
         final int typeId = readUnsignedByte();
-        final Tag.Type[] types = Tag.Type.values();
+        final TagType[] types = TagType.values();
 
         if(typeId < 0 | typeId > types.length) {
             if(typeId == 31 && !compressed) {
@@ -64,7 +68,7 @@ public class NBTInputStream extends DataInputStream {
     }
 
     @Nullable
-    private Tag<?> readTag(final Tag.Type type, final boolean hasName) throws IOException {
+    private Tag<?> readTag(final TagType type, final boolean hasName) throws IOException {
         switch(type) {
             case END:
                 return null;
@@ -158,7 +162,7 @@ public class NBTInputStream extends DataInputStream {
 
     private Tag<List<Tag<?>>> readListTag(final boolean hasName) throws IOException {
         final String name = hasName ? readUTF() : "";
-        final Tag.Type type = readTagType();
+        final TagType type = readTagType();
 
         if(type == END) {
             return null;

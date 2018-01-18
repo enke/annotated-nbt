@@ -1,10 +1,10 @@
-package ru.enke.annotated.nbt.tag;
+package ru.enke.annotated.nbt;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static ru.enke.annotated.nbt.tag.Tag.Type.*;
+import static ru.enke.annotated.nbt.TagType.*;
 
 public class TagFactory {
 

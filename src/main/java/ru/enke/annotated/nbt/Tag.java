@@ -1,4 +1,4 @@
-package ru.enke.annotated.nbt.tag;
+package ru.enke.annotated.nbt;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -6,26 +6,11 @@ import java.util.Objects;
 
 public class Tag<T> {
 
-    public enum Type {
-        END,
-        BYTE,
-        SHORT,
-        INTEGER,
-        LONG,
-        FLOAT,
-        DOUBLE,
-        BYTE_ARRAY,
-        STRING,
-        LIST,
-        COMPOUND,
-        INTEGER_ARRAY
-    }
-
     private final String name;
     private final T value;
-    private final Type type;
+    private final TagType type;
 
-    Tag(final String name, final T value, final Type type) {
+    Tag(final String name, final T value, final TagType type) {
         this.name = name;
         this.value = value;
         this.type = type;
@@ -39,7 +24,7 @@ public class Tag<T> {
         return value;
     }
 
-    public Type getType() {
+    public TagType getType() {
         return type;
     }
 

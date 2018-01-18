@@ -1,6 +1,7 @@
 package ru.enke.annotated.nbt.stream;
 
-import ru.enke.annotated.nbt.tag.Tag;
+import ru.enke.annotated.nbt.Tag;
+import ru.enke.annotated.nbt.TagType;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
-import static ru.enke.annotated.nbt.tag.Tag.Type.END;
+import static ru.enke.annotated.nbt.TagType.END;
 
 public class NBTOutputStream extends DataOutputStream {
 
@@ -22,19 +23,19 @@ public class NBTOutputStream extends DataOutputStream {
     }
 
     public void writeTag(final Tag tag) throws IOException {
-        final Tag.Type tagType = tag.getType();
+        final TagType tagType = tag.getType();
 
         writeTagType(tagType);
         writeUTF(tag.getName());
         writeTag(tagType, tag.getValue());
     }
 
-    private void writeTagType(final Tag.Type type) throws IOException {
+    private void writeTagType(final TagType type) throws IOException {
         writeByte(type.ordinal());
     }
 
     @SuppressWarnings("unchecked")
-    private void writeTag(final Tag.Type type, final Object value) throws IOException {
+    private void writeTag(final TagType type, final Object value) throws IOException {
         switch(type) {
             case END:
                 break;
@@ -110,7 +111,7 @@ public class NBTOutputStream extends DataOutputStream {
     }
 
     private void writeListTag(final List<Tag<?>> tags) throws IOException {
-        final Tag.Type elementType = !tags.isEmpty() ? tags.get(0).getType() : END;
+        final TagType elementType = !tags.isEmpty() ? tags.get(0).getType() : END;
 
         writeTagType(elementType);
         writeInt(tags.size());

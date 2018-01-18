@@ -1,11 +1,11 @@
-package ru.enke.annotated.nbt.tag;
+package ru.enke.annotated.nbt;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static ru.enke.annotated.nbt.tag.Tag.Type.*;
+import static ru.enke.annotated.nbt.TagType.*;
 
 public class TagCompound extends Tag<Map<String, Tag<?>>> {
 
@@ -32,14 +32,28 @@ public class TagCompound extends Tag<Map<String, Tag<?>>> {
         return getValue().size();
     }
 
-    private <T> T getValue(final String name, final Tag.Type expectedType, final Class<T> cls) {
+    public boolean containsTag(final String name) {
+        return tags.containsKey(name);
+    }
+
+    private void setValue(final Tag<?> tag) {
+        final String name = tag.getName();
+
+        if(tags.containsKey(name)) {
+            throw new IllegalStateException("Tag with name " + name + " already exists");
+        }
+
+        tags.put(name, tag);
+    }
+
+    private <T> T getValue(final String name, final TagType expectedType, final Class<T> cls) {
         final Tag<?> tag = tags.get(name);
 
         if(tag == null) {
             throw new IllegalStateException("Tag with name " + name + " not found");
         }
 
-        final Tag.Type type = tag.getType();
+        final TagType type = tag.getType();
 
         if(expectedType != type) {
             throw new IllegalStateException("Tag type not matches. Expected: " + expectedType + " and actual: " + type);
@@ -49,11 +63,11 @@ public class TagCompound extends Tag<Map<String, Tag<?>>> {
     }
 
     @SuppressWarnings("unchecked")
-    private List<Tag<?>> getList(final String name, final Type expectedType) {
+    private List<Tag<?>> getList(final String name, final TagType expectedType) {
         final List<Tag<?>> list = getValue(name, LIST, List.class);
 
         if(!list.isEmpty()) {
-            final Tag.Type type = list.get(0).getType();
+            final TagType type = list.get(0).getType();
 
             if(type != expectedType) {
                 throw new IllegalStateException("List tag type not matches. Expected: " + expectedType + " and actual: " + type);
@@ -63,10 +77,54 @@ public class TagCompound extends Tag<Map<String, Tag<?>>> {
         return list;
     }
 
-    private List<?> getListValue(final String name, final Type expectedType) {
+    private List<?> getListValue(final String name, final TagType expectedType) {
         return getList(name, expectedType).stream()
                 .map(Tag::getValue)
                 .collect(Collectors.toList());
+    }
+
+    public void setBoolean(final String name, final boolean value) {
+        setByte(name, (byte) (value ? 1 : 0));
+    }
+
+    public void setByte(final String name, final byte value) {
+        setValue(TagFactory.createByteTag(name, value));
+    }
+
+    public void setShort(final String name, final short value) {
+        setValue(TagFactory.createShortTag(name, value));
+    }
+
+    public void setInt(final String name, final int value) {
+        setValue(TagFactory.createIntTag(name, value));
+    }
+
+    public void setDouble(final String name, final double value) {
+        setValue(TagFactory.createDoubleTag(name, value));
+    }
+
+    public void setFloat(final String name, final float value) {
+        setValue(TagFactory.createFloatTag(name, value));
+    }
+
+    public void setLong(final String name, final long value) {
+        setValue(TagFactory.createLongTag(name, value));
+    }
+
+    public void setString(final String name, final String value) {
+        setValue(TagFactory.createStringTag(name, value));
+    }
+
+    public void setByteArray(final String name, final byte[] value) {
+        setValue(TagFactory.createByteArrayTag(name, value));
+    }
+
+    public void setIntArray(final String name, final int[] value) {
+        setValue(TagFactory.createIntArrayTag(name, value));
+    }
+
+    public boolean getBoolean(final String name) {
+        return getByte(name) == 1;
     }
 
     public byte getByte(final String name) {
@@ -77,7 +135,7 @@ public class TagCompound extends Tag<Map<String, Tag<?>>> {
         return getValue(name, DOUBLE, Double.class);
     }
 
-    public double getFloat(final String name) {
+    public float getFloat(final String name) {
         return getValue(name, FLOAT, Float.class);
     }
 
@@ -89,7 +147,7 @@ public class TagCompound extends Tag<Map<String, Tag<?>>> {
         return getValue(name, LONG, Long.class);
     }
 
-    public int getShort(final String name) {
+    public short getShort(final String name) {
         return getValue(name, SHORT, Short.class);
     }
 

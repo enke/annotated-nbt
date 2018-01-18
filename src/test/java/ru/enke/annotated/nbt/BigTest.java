@@ -3,7 +3,6 @@ package ru.enke.annotated.nbt;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import ru.enke.annotated.nbt.stream.NBTInputStream;
-import ru.enke.annotated.nbt.tag.TagCompound;
 
 import java.io.FileInputStream;
 import java.io.IOException;
