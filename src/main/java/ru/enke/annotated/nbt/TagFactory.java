@@ -42,6 +42,10 @@ public class TagFactory {
         return new Tag<>(name, value, LONG);
     }
 
+    public static Tag<Float> createFloatTag(final float value) {
+        return createFloatTag("", value);
+    }
+
     public static Tag<Float> createFloatTag(final String name, final float value) {
         return new Tag<>(name, value, FLOAT);
     }

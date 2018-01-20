@@ -123,6 +123,86 @@ public class TagCompound extends Tag<Map<String, Tag<?>>> {
         setValue(TagFactory.createIntArrayTag(name, value));
     }
 
+    public void setBooleanList(final String name, final List<Boolean> list) {
+        final List<Tag<?>> tagList = list.stream()
+                .map(b -> TagFactory.createByteTag((byte) (b ? 1 : 0)))
+                .collect(Collectors.toList());
+
+        setValue(TagFactory.createListTag(name, tagList));
+    }
+
+    public void setByteList(final String name, final List<Byte> list) {
+        final List<Tag<?>> tagList = list.stream()
+                .map(TagFactory::createByteTag)
+                .collect(Collectors.toList());
+
+        setValue(TagFactory.createListTag(name, tagList));
+    }
+
+    public void setShortList(final String name, final List<Short> list) {
+        final List<Tag<?>> tagList = list.stream()
+                .map(TagFactory::createShortTag)
+                .collect(Collectors.toList());
+
+        setValue(TagFactory.createListTag(name, tagList));
+    }
+
+    public void setIntList(final String name, final List<Integer> list) {
+        final List<Tag<?>> tagList = list.stream()
+                .map(TagFactory::createIntTag)
+                .collect(Collectors.toList());
+
+        setValue(TagFactory.createListTag(name, tagList));
+    }
+
+    public void setLongList(final String name, final List<Long> list) {
+        final List<Tag<?>> tagList = list.stream()
+                .map(TagFactory::createLongTag)
+                .collect(Collectors.toList());
+
+        setValue(TagFactory.createListTag(name, tagList));
+    }
+
+    public void setFloatList(final String name, final List<Float> list) {
+        final List<Tag<?>> tagList = list.stream()
+                .map(TagFactory::createFloatTag)
+                .collect(Collectors.toList());
+
+        setValue(TagFactory.createListTag(name, tagList));
+    }
+
+    public void setDoubleList(final String name, final List<Double> list) {
+        final List<Tag<?>> tagList = list.stream()
+                .map(TagFactory::createDoubleTag)
+                .collect(Collectors.toList());
+
+        setValue(TagFactory.createListTag(name, tagList));
+    }
+
+    public void setStringList(final String name, final List<String> list) {
+        final List<Tag<?>> tagList = list.stream()
+                .map(TagFactory::createStringTag)
+                .collect(Collectors.toList());
+
+        setValue(TagFactory.createListTag(name, tagList));
+    }
+
+    public void setByteArrayList(final String name, final List<byte[]> list) {
+        final List<Tag<?>> tagList = list.stream()
+                .map(TagFactory::createByteArrayTag)
+                .collect(Collectors.toList());
+
+        setValue(TagFactory.createListTag(name, tagList));
+    }
+
+    public void setIntArrayList(final String name, final List<int[]> list) {
+        final List<Tag<?>> tagList = list.stream()
+                .map(TagFactory::createIntArrayTag)
+                .collect(Collectors.toList());
+
+        setValue(TagFactory.createListTag(name, tagList));
+    }
+
     public boolean getBoolean(final String name) {
         return getByte(name) == 1;
     }
@@ -169,8 +249,21 @@ public class TagCompound extends Tag<Map<String, Tag<?>>> {
     }
 
     @SuppressWarnings("unchecked")
+    public List<Boolean> getBooleanList(final String name) {
+        return getByteList(name)
+                .stream()
+                .map(b -> b == 1)
+                .collect(Collectors.toList());
+    }
+
+    @SuppressWarnings("unchecked")
     public List<Byte> getByteList(final String name) {
         return (List<Byte>) getListValue(name, BYTE);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Short> getShortList(final String name) {
+        return (List<Short>) getListValue(name, SHORT);
     }
 
     @SuppressWarnings("unchecked")

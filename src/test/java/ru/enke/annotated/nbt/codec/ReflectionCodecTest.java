@@ -4,9 +4,10 @@ import org.junit.Test;
 import ru.enke.annotated.nbt.TagCompound;
 import ru.enke.annotated.nbt.exception.TagCodecException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class ReflectionCodecTest {
 
@@ -134,6 +135,146 @@ public class ReflectionCodecTest {
         assertNotNull(object);
         assertEquals(1, tagCompound.getSize());
         assertEquals(intArray, object.sampleIntArray);
+    }
+
+    @Test
+    public void testDecodeBooleanList() throws TagCodecException {
+        final List<Boolean> booleanList = Arrays.asList(true, true, false, false, true);
+
+        final TagCompound tagCompound = new TagCompound("test");
+        tagCompound.setBooleanList("booleanList", booleanList);
+
+        final ObjectSample object = codec.decode(tagCompound, ObjectSample.class);
+
+        assertNotNull(object);
+        assertEquals(1, tagCompound.getSize());
+        assertEquals(booleanList, object.sampleBooleanList);
+    }
+
+    @Test
+    public void testDecodeByteList() throws TagCodecException {
+        final List<Byte> byteList = Arrays.asList((byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5);
+
+        final TagCompound tagCompound = new TagCompound("test");
+        tagCompound.setByteList("byteList", byteList);
+
+        final ObjectSample object = codec.decode(tagCompound, ObjectSample.class);
+
+        assertNotNull(object);
+        assertEquals(1, tagCompound.getSize());
+        assertEquals(byteList, object.sampleByteList);
+    }
+
+    @Test
+    public void testDecodeShortList() throws TagCodecException {
+        final List<Short> shortList = Arrays.asList((short) 1, (short) 2, (short) 3, (short) 4, (short) 5);
+
+        final TagCompound tagCompound = new TagCompound("test");
+        tagCompound.setShortList("shortList", shortList);
+
+        final ObjectSample object = codec.decode(tagCompound, ObjectSample.class);
+
+        assertNotNull(object);
+        assertEquals(1, tagCompound.getSize());
+        assertEquals(shortList, object.sampleShortList);
+    }
+
+    @Test
+    public void testDecodeIntList() throws TagCodecException {
+        final List<Integer> intList = Arrays.asList(1, 2, 3, 4, 5);
+
+        final TagCompound tagCompound = new TagCompound("test");
+        tagCompound.setIntList("intList", intList);
+
+        final ObjectSample object = codec.decode(tagCompound, ObjectSample.class);
+
+        assertNotNull(object);
+        assertEquals(1, tagCompound.getSize());
+        assertEquals(intList, object.sampleIntList);
+    }
+
+    @Test
+    public void testDecodeLongList() throws TagCodecException {
+        final List<Long> longList = Arrays.asList(1L, 2L, 3L, 4L, 5L);
+
+        final TagCompound tagCompound = new TagCompound("test");
+        tagCompound.setLongList("longList", longList);
+
+        final ObjectSample object = codec.decode(tagCompound, ObjectSample.class);
+
+        assertNotNull(object);
+        assertEquals(1, tagCompound.getSize());
+        assertEquals(longList, object.sampleLongList);
+    }
+
+    @Test
+    public void testDecodeFloatList() throws TagCodecException {
+        final List<Float> floatList = Arrays.asList(1.2F, 2.3F, 3.4F, 4.5F, 5.6F);
+
+        final TagCompound tagCompound = new TagCompound("test");
+        tagCompound.setFloatList("floatList", floatList);
+
+        final ObjectSample object = codec.decode(tagCompound, ObjectSample.class);
+
+        assertNotNull(object);
+        assertEquals(1, tagCompound.getSize());
+        assertEquals(floatList, object.sampleFloatList);
+    }
+
+    @Test
+    public void testDecodeDoubleList() throws TagCodecException {
+        final List<Double> doubleList = Arrays.asList(1.2, 2.3, 3.4, 4.5, 5.6);
+
+        final TagCompound tagCompound = new TagCompound("test");
+        tagCompound.setDoubleList("doubleList", doubleList);
+
+        final ObjectSample object = codec.decode(tagCompound, ObjectSample.class);
+
+        assertNotNull(object);
+        assertEquals(1, tagCompound.getSize());
+        assertEquals(doubleList, object.sampleDoubleList);
+    }
+
+    @Test
+    public void testDecodeStringList() throws TagCodecException {
+        final List<String> stringList = Arrays.asList("a", "b", "c", "d");
+
+        final TagCompound tagCompound = new TagCompound("test");
+        tagCompound.setStringList("stringList", stringList);
+
+        final ObjectSample object = codec.decode(tagCompound, ObjectSample.class);
+
+        assertNotNull(object);
+        assertEquals(1, tagCompound.getSize());
+        assertEquals(stringList, object.sampleStringList);
+    }
+
+    @Test
+    public void testDecodeByteArrayList() throws TagCodecException {
+        final List<byte[]> byteArrayList = Arrays.asList(new byte[] {1, 3, 5, 2, 3}, new byte[] {1, 3, 5, 2, 3});
+
+        final TagCompound tagCompound = new TagCompound("test");
+        tagCompound.setByteArrayList("byteArrayList", byteArrayList);
+
+        final ObjectSample object = codec.decode(tagCompound, ObjectSample.class);
+
+        assertNotNull(object);
+        assertEquals(1, tagCompound.getSize());
+        assertEquals(byteArrayList, object.sampleByteArrayList);
+    }
+
+    @Test
+    public void testDecodeIntArrayList() throws TagCodecException {
+        final List<int[]> intArrayList = Arrays.asList(new int[] {1, 3, 5, 2, 3}, new int[] {1, 3, 5, 2, 3});
+
+        final TagCompound tagCompound = new TagCompound("test");
+        tagCompound.setIntArrayList("intArrayList", intArrayList);
+
+        final ObjectSample object = codec.decode(tagCompound, ObjectSample.class);
+
+        assertNotNull(object);
+        assertEquals(1, tagCompound.getSize());
+        assertEquals(intArrayList, object.sampleIntArrayList);
     }
 
     @Test

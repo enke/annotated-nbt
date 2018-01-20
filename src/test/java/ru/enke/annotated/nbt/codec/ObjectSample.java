@@ -38,7 +38,34 @@ public class ObjectSample {
     @NBT("intArray")
     public int[] sampleIntArray;
 
-    @NBT("list")
-    public List<?> sampleList;
+    @NBT("booleanList")
+    public List<Boolean> sampleBooleanList;
+
+    @NBT("byteList")
+    public List<Byte> sampleByteList;
+
+    @NBT("shortList")
+    public List<Short> sampleShortList;
+
+    @NBT("intList")
+    public List<Integer> sampleIntList;
+
+    @NBT("longList")
+    public List<Long> sampleLongList;
+
+    @NBT("floatList")
+    public List<Float> sampleFloatList;
+
+    @NBT("doubleList")
+    public List<Double> sampleDoubleList;
+
+    @NBT("stringList")
+    public List<String> sampleStringList;
+
+    @NBT("byteArrayList")
+    public List<byte[]> sampleByteArrayList;
+
+    @NBT("intArrayList")
+    public List<int[]> sampleIntArrayList;
 
 }
