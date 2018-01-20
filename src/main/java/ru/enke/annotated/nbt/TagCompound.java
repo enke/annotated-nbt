@@ -1,5 +1,6 @@
 package ru.enke.annotated.nbt;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -205,6 +206,14 @@ public class TagCompound extends Tag<Map<String, Tag<?>>> {
                 .collect(Collectors.toList());
 
         setValue(TagFactory.createListTag(name, tagList));
+    }
+
+    public void setCompoundList(final String name, final TagCompound... tagCompounds) {
+        setCompoundList(name, Arrays.asList(tagCompounds));
+    }
+
+    public void setCompoundList(final String name, final List<Tag<?>> tagCompounds) {
+        setValue(TagFactory.createListTag(name, tagCompounds));
     }
 
     public boolean getBoolean(final String name) {

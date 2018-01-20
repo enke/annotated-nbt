@@ -7,6 +7,8 @@ import ru.enke.annotated.nbt.util.ReflectionUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -71,11 +73,18 @@ public class ReflectionCodec implements TagCodec {
                 return tagCompound.getString(tagName);
             case LIST:
                 final ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
-                Class<?> listClassType = (Class<?>) parameterizedType.getActualTypeArguments()[0];
+                final Class<?> listClassType = (Class<?>) parameterizedType.getActualTypeArguments()[0];
                 final TagType listTagType = TagType.getTypeByClass(listClassType);
 
                 if(listTagType == null) {
-                    return tagCompound.getCompoundList(tagName);
+                    final List<Object> objectList = new ArrayList<>();
+                    final List<TagCompound> compoundList = tagCompound.getCompoundList(tagName);
+
+                    for(final TagCompound listTag : compoundList) {
+                        objectList.add(decode(listTag, listClassType));
+                    }
+
+                    return objectList;
                 }
 
                 switch(listTagType) {
@@ -103,11 +112,9 @@ public class ReflectionCodec implements TagCodec {
                         return tagCompound.getCompoundList(tagName);
                     case INTEGER_ARRAY:
                         return tagCompound.getIntArrayList(tagName);
+                    default:
+                        throw new UnsupportedOperationException();
                 }
-
-                return null;
-            case COMPOUND:
-                return null;
             case INTEGER_ARRAY:
                 return tagCompound.getIntArray(tagName);
             default:

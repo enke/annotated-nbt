@@ -71,4 +71,7 @@ class ObjectSample {
     @NBT("object")
     ObjectSample sampleObject;
 
+    @NBT("objectList")
+    List<ObjectSample> sampleObjectList;
+
 }
