@@ -40,12 +40,12 @@ public class ReflectionCodec implements TagCodec {
         return new TagCompound();
     }
 
-    private Object getValueFromField(final TagCompound tagCompound, final String tagName, final Field field) {
+    private Object getValueFromField(final TagCompound tagCompound, final String tagName, final Field field) throws TagCodecException {
         final Class<?> fieldType = field.getType();
         final TagType tagType = TagType.getTypeByClass(fieldType);
 
         if(tagType == null) {
-            return tagCompound.getCompound(tagName);
+            return decode(tagCompound.getCompound(tagName), fieldType);
         }
 
         switch(tagType) {

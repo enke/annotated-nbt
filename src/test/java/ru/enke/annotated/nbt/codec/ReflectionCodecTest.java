@@ -278,6 +278,29 @@ public class ReflectionCodecTest {
     }
 
     @Test
+    public void testDecodeObject() throws TagCodecException {
+        final TagCompound innerCompound = new TagCompound("object");
+        innerCompound.setBoolean("boolean", true);
+        innerCompound.setLong("long", 35L);
+        innerCompound.setString("string", "abcd");
+
+        final TagCompound tagCompound = new TagCompound("test");
+        tagCompound.setCompound(innerCompound);
+
+        final ObjectSample object = codec.decode(tagCompound, ObjectSample.class);
+
+        assertNotNull(object);
+        assertEquals(1, tagCompound.getSize());
+
+        final ObjectSample innerObject = object.sampleObject;
+
+        assertNotNull(innerObject);
+        assertTrue(innerObject.sampleBoolean);
+        assertEquals(35, innerObject.sampleLong);
+        assertEquals("abcd", innerObject.sampleString);
+    }
+
+    @Test
     public void testEncodeEmpty() throws TagCodecException {
         final ObjectSample object = new ObjectSample();
         final TagCompound tagCompound = codec.encode("test", object);

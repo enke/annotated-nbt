@@ -115,6 +115,10 @@ public class TagCompound extends Tag<Map<String, Tag<?>>> {
         setValue(TagFactory.createStringTag(name, value));
     }
 
+    public void setCompound(final TagCompound tagCompound) {
+        tags.put(tagCompound.getName(), tagCompound);
+    }
+
     public void setByteArray(final String name, final byte[] value) {
         setValue(TagFactory.createByteArrayTag(name, value));
     }

@@ -68,4 +68,7 @@ class ObjectSample {
     @NBT("intArrayList")
     List<int[]> sampleIntArrayList;
 
+    @NBT("object")
+    ObjectSample sampleObject;
+
 }
