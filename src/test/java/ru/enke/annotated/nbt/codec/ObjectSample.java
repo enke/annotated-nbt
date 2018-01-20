@@ -7,65 +7,65 @@ import java.util.List;
 public class ObjectSample {
 
     @NBT("boolean")
-    public boolean sampleBoolean;
+    boolean sampleBoolean;
 
     @NBT("byte")
-    public byte sampleByte;
+    byte sampleByte;
 
     @NBT("short")
-    public short sampleShort;
+    short sampleShort;
 
     @NBT("int")
-    public int sampleInt;
+    int sampleInt;
 
     @NBT("long")
-    public long sampleLong;
+    long sampleLong;
 
     @NBT("float")
-    public float sampleFloat;
+    float sampleFloat;
 
     @NBT("double")
-    public double sampleDouble;
+    double sampleDouble;
 
     @NBT("string")
-    public String sampleString;
+    String sampleString;
 
-    public String skipString;
+    String skipString;
 
     @NBT("byteArray")
-    public byte[] sampleByteArray;
+    byte[] sampleByteArray;
 
     @NBT("intArray")
-    public int[] sampleIntArray;
+    int[] sampleIntArray;
 
     @NBT("booleanList")
-    public List<Boolean> sampleBooleanList;
+    List<Boolean> sampleBooleanList;
 
     @NBT("byteList")
-    public List<Byte> sampleByteList;
+    List<Byte> sampleByteList;
 
     @NBT("shortList")
-    public List<Short> sampleShortList;
+    List<Short> sampleShortList;
 
     @NBT("intList")
-    public List<Integer> sampleIntList;
+    List<Integer> sampleIntList;
 
     @NBT("longList")
-    public List<Long> sampleLongList;
+    List<Long> sampleLongList;
 
     @NBT("floatList")
-    public List<Float> sampleFloatList;
+    List<Float> sampleFloatList;
 
     @NBT("doubleList")
-    public List<Double> sampleDoubleList;
+    List<Double> sampleDoubleList;
 
     @NBT("stringList")
-    public List<String> sampleStringList;
+    List<String> sampleStringList;
 
     @NBT("byteArrayList")
-    public List<byte[]> sampleByteArrayList;
+    List<byte[]> sampleByteArrayList;
 
     @NBT("intArrayList")
-    public List<int[]> sampleIntArrayList;
+    List<int[]> sampleIntArrayList;
 
 }
