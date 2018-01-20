@@ -1,0 +1,1 @@
+[![Build Status](https://travis-ci.org/enke/annotated-nbt.svg?branch=master)](https://travis-ci.org/enke/annotated-nbt)
