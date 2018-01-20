@@ -4,7 +4,7 @@ import ru.enke.annotated.nbt.annotation.NBT;
 
 import java.util.List;
 
-public class ObjectSample {
+class ObjectSample {
 
     @NBT("boolean")
     boolean sampleBoolean;

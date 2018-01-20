@@ -3,6 +3,7 @@ package ru.enke.annotated.nbt.util;
 import ru.enke.annotated.nbt.annotation.NBT;
 import ru.enke.annotated.nbt.exception.TagCodecException;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -41,7 +42,10 @@ public class ReflectionUtil {
 
     public static <T> T createObject(final Class<T> cls) throws TagCodecException {
         try {
-            return cls.getDeclaredConstructor().newInstance();
+            final Constructor<T> constructor = cls.getDeclaredConstructor();
+            constructor.setAccessible(true);
+
+            return constructor.newInstance();
         } catch(final Exception e) {
             throw new TagCodecException("Failed to create object from " + cls + " constructor", e);
         }
